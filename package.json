@@ -16,6 +16,10 @@
       {
         "command": "demo.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "demo.copyPathToTerminal",
+        "title": "Copy filepath to terminal"
       }
     ]
   },

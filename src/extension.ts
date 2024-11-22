@@ -16,10 +16,34 @@ export function activate(context: vscode.ExtensionContext) {
 	const disposable = vscode.commands.registerCommand('demo.helloWorld', () => {
 		// The code you place here will be executed every time your command is executed
 		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from Demo!');
+		vscode.window.showInformationMessage('Hello VS Code!');
+	});
+
+	let copyPathCommand = vscode.commands.registerCommand('demo.copyPathToTerminal', () => {
+		// Get the active text editor
+		const editor = vscode.window.activeTextEditor;
+
+		if (!editor) {
+			vscode.window.showErrorMessage('No file is currently open');
+			return;
+		}
+
+		// Get the file path
+		const filePath = editor.document.uri.fsPath;
+
+		// Get the active terminal or create one
+		let terminal = vscode.window.activeTerminal;
+		if (!terminal) {
+			terminal = vscode.window.createTerminal();
+		}
+
+		// Show the terminal and send the path
+		terminal.show();
+		terminal.sendText(filePath, false); // false means don't execute the command
 	});
 
 	context.subscriptions.push(disposable);
+	context.subscriptions.push(copyPathCommand);
 }
 
 // This method is called when your extension is deactivated
