@@ -14,6 +14,37 @@ function isPathAllowed(filePath: string, restrictToPath: string): boolean {
 	return normalizedPath.includes(normalizedRestriction);
 }
 
+function getProcessedFilePath(editor: vscode.TextEditor | undefined): string | undefined {
+	if (!editor) {
+		vscode.window.showErrorMessage('No file is currently open');
+		return;
+	}
+
+	const config = vscode.workspace.getConfiguration('pathCopier');
+	const restrictToPath = config.get<string>('restrictToPath', '');
+	const excludePrefix = config.get<string>('excludePrefix', '');
+	let filePath = editor.document.uri.fsPath;
+
+	if (!isPathAllowed(filePath, restrictToPath)) {
+		vscode.window.showErrorMessage(`This command can only be used on files within: ${restrictToPath}`);
+		return;
+	}
+
+	// Remove the prefix if it exists at the start of the path
+	if (excludePrefix && filePath.startsWith(excludePrefix)) {
+		filePath = filePath.substring(excludePrefix.length);
+		if (filePath.startsWith('/')) {
+			filePath = filePath.substring(1);
+		}
+	}
+
+	return filePath;
+}
+
+function getOrCreateTerminal(): vscode.Terminal {
+	return vscode.window.activeTerminal || vscode.window.createTerminal();
+}
+
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -32,82 +63,24 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	let copyPathCommand = vscode.commands.registerCommand('demo.copyPathToTerminal', () => {
-		const editor = vscode.window.activeTextEditor;
+		const filePath = getProcessedFilePath(vscode.window.activeTextEditor);
+		if (!filePath) return;
 
-		if (!editor) {
-			vscode.window.showErrorMessage('No file is currently open');
-			return;
-		}
-
-		const config = vscode.workspace.getConfiguration('pathCopier');
-		const restrictToPath = config.get<string>('restrictToPath', '');
-		const excludePrefix = config.get<string>('excludePrefix', '');
-		let filePath = editor.document.uri.fsPath;
-
-		if (!isPathAllowed(filePath, restrictToPath)) {
-			vscode.window.showErrorMessage(`This command can only be used on files within: ${restrictToPath}`);
-			return;
-		}
-
-		// Remove the prefix if it exists at the start of the path
-		if (excludePrefix && filePath.startsWith(excludePrefix)) {
-			filePath = filePath.substring(excludePrefix.length);
-			// Remove leading slash if present
-			if (filePath.startsWith('/')) {
-				filePath = filePath.substring(1);
-			}
-		}
-
-		// Get the active terminal or create one
-		let terminal = vscode.window.activeTerminal;
-		if (!terminal) {
-			terminal = vscode.window.createTerminal();
-		}
-
+		const terminal = getOrCreateTerminal();
 		terminal.show();
 		terminal.sendText(filePath, false);
 	});
 
 	let copyPathWithPrefixCommand = vscode.commands.registerCommand('demo.copyPathWithPrefix', () => {
-		const editor = vscode.window.activeTextEditor;
+		const filePath = getProcessedFilePath(vscode.window.activeTextEditor);
+		if (!filePath) return;
 
-		if (!editor) {
-			vscode.window.showErrorMessage('No file is currently open');
-			return;
-		}
-
-		const config = vscode.workspace.getConfiguration('pathCopier');
-		const restrictToPath = config.get<string>('restrictToPath', '');
-		let filePath = editor.document.uri.fsPath;
-
-		if (!isPathAllowed(filePath, restrictToPath)) {
-			vscode.window.showErrorMessage(`This command can only be used on files within: ${restrictToPath}`);
-			return;
-		}
-
-		// Remove the exclude prefix if it exists
-		const excludePrefix = config.get<string>('excludePrefix', '');
-		const commandPrefix = config.get<string>('commandPrefix', '');
-
-		// Remove the exclude prefix if it exists
-		if (excludePrefix && filePath.startsWith(excludePrefix)) {
-			filePath = filePath.substring(excludePrefix.length);
-			if (filePath.startsWith('/')) {
-				filePath = filePath.substring(1);
-			}
-		}
-
-		// Construct the full command
+		const commandPrefix = vscode.workspace.getConfiguration('pathCopier').get<string>('commandPrefix', '');
 		const fullCommand = `${commandPrefix}${filePath}`;
 
-		// Get the active terminal or create one
-		let terminal = vscode.window.activeTerminal;
-		if (!terminal) {
-			terminal = vscode.window.createTerminal();
-		}
-
+		const terminal = getOrCreateTerminal();
 		terminal.show();
-		terminal.sendText(fullCommand, false); // false means don't execute the command
+		terminal.sendText(fullCommand, false);
 	});
 
 	context.subscriptions.push(disposable);
