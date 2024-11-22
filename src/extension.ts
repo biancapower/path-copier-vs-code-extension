@@ -51,12 +51,12 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "demo" is now active!');
+	console.log('Path Copier extension is now active!');
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
-	let copyPathCommand = vscode.commands.registerCommand('demo.copyPathToTerminal', () => {
+	let copyPathCommand = vscode.commands.registerCommand('pathCopier.copyPathToTerminal', () => {
 		const filePath = getProcessedFilePath(vscode.window.activeTextEditor);
 		if (!filePath) {return;}
 
@@ -65,7 +65,7 @@ export function activate(context: vscode.ExtensionContext) {
 		terminal.sendText(filePath, false);
 	});
 
-	let copyPathWithPrefixCommand = vscode.commands.registerCommand('demo.copyPathWithPrefix', () => {
+	let copyPathWithPrefixCommand = vscode.commands.registerCommand('pathCopier.copyPathWithPrefix', () => {
 		const filePath = getProcessedFilePath(vscode.window.activeTextEditor);
 		if (!filePath) {return;}
 

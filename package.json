@@ -1,7 +1,7 @@
 {
-  "name": "demo",
-  "displayName": "Demo",
-  "description": "A demo",
+  "name": "path-copier",
+  "displayName": "Path Copier",
+  "description": "Copy file paths to terminal with optional prefixes and restrictions",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.95.0"
@@ -14,11 +14,11 @@
   "contributes": {
     "commands": [
       {
-        "command": "demo.copyPathToTerminal",
+        "command": "pathCopier.copyPathToTerminal",
         "title": "Copy filepath to terminal"
       },
       {
-        "command": "demo.copyPathWithPrefix",
+        "command": "pathCopier.copyPathWithPrefix",
         "title": "Copy filepath to terminal with command prefix"
       }
     ],
