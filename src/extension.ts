@@ -58,7 +58,7 @@ export function activate(context: vscode.ExtensionContext) {
 	// The commandId parameter must match the command field in package.json
 	let copyPathCommand = vscode.commands.registerCommand('demo.copyPathToTerminal', () => {
 		const filePath = getProcessedFilePath(vscode.window.activeTextEditor);
-		if (!filePath) return;
+		if (!filePath) {return;}
 
 		const terminal = getOrCreateTerminal();
 		terminal.show();
@@ -67,7 +67,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	let copyPathWithPrefixCommand = vscode.commands.registerCommand('demo.copyPathWithPrefix', () => {
 		const filePath = getProcessedFilePath(vscode.window.activeTextEditor);
-		if (!filePath) return;
+		if (!filePath) {return;}
 
 		const commandPrefix = vscode.workspace.getConfiguration('pathCopier').get<string>('commandPrefix', '');
 		const fullCommand = `${commandPrefix}${filePath}`;
