@@ -21,7 +21,17 @@
         "command": "demo.copyPathToTerminal",
         "title": "Copy filepath to terminal"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Path Copier",
+      "properties": {
+        "pathCopier.excludePrefix": {
+          "type": "string",
+          "default": "",
+          "description": "Path prefix to exclude when copying filepath to terminal (e.g., '/Users/name/project/')"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

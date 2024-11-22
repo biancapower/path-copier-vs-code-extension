@@ -20,7 +20,6 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	let copyPathCommand = vscode.commands.registerCommand('demo.copyPathToTerminal', () => {
-		// Get the active text editor
 		const editor = vscode.window.activeTextEditor;
 
 		if (!editor) {
@@ -29,7 +28,20 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 
 		// Get the file path
-		const filePath = editor.document.uri.fsPath;
+		let filePath = editor.document.uri.fsPath;
+
+		// Get the exclude prefix from configuration
+		const config = vscode.workspace.getConfiguration('pathCopier');
+		const excludePrefix = config.get<string>('excludePrefix', '');
+
+		// Remove the prefix if it exists at the start of the path
+		if (excludePrefix && filePath.startsWith(excludePrefix)) {
+			filePath = filePath.substring(excludePrefix.length);
+			// Remove leading slash if present
+			if (filePath.startsWith('/')) {
+				filePath = filePath.substring(1);
+			}
+		}
 
 		// Get the active terminal or create one
 		let terminal = vscode.window.activeTerminal;
@@ -37,9 +49,8 @@ export function activate(context: vscode.ExtensionContext) {
 			terminal = vscode.window.createTerminal();
 		}
 
-		// Show the terminal and send the path
 		terminal.show();
-		terminal.sendText(filePath, false); // false means don't execute the command
+		terminal.sendText(filePath, false);
 	});
 
 	context.subscriptions.push(disposable);
