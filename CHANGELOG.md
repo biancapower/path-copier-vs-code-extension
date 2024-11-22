@@ -2,6 +2,9 @@
 
 All notable changes to the "Path Copier" extension will be documented in this file.
 
+## [0.0.2] - November 2024
+- Lower required VS Code version
+
 ## [0.0.1] - November 2024
 
 ### Added

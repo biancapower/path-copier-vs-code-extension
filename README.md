@@ -39,14 +39,3 @@ Using "Copy filepath to terminal with command prefix" will output:
 ```sh
 rails test:rspec spec=models/user_spec.rb
 ```
-
-
-## Release Notes
-
-### 0.0.1
-
-Initial release of Path Copier:
-- Basic file path copying
-- Command prefix support
-- Path restriction capability
-- Path prefix exclusion
