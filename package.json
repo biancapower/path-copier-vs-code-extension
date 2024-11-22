@@ -20,6 +20,10 @@
       {
         "command": "demo.copyPathToTerminal",
         "title": "Copy filepath to terminal"
+      },
+      {
+        "command": "demo.copyPathWithPrefix",
+        "title": "Copy filepath to terminal with command prefix"
       }
     ],
     "configuration": {
@@ -29,6 +33,11 @@
           "type": "string",
           "default": "",
           "description": "Path prefix to exclude when copying filepath to terminal (e.g., '/Users/name/project/')"
+        },
+        "pathCopier.commandPrefix": {
+          "type": "string",
+          "default": "",
+          "description": "Command to prefix before the filepath (e.g., 'rails test:rspec spec=')"
         }
       }
     }

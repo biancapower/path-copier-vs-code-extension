@@ -53,8 +53,46 @@ export function activate(context: vscode.ExtensionContext) {
 		terminal.sendText(filePath, false);
 	});
 
+	let copyPathWithPrefixCommand = vscode.commands.registerCommand('demo.copyPathWithPrefix', () => {
+		const editor = vscode.window.activeTextEditor;
+
+		if (!editor) {
+			vscode.window.showErrorMessage('No file is currently open');
+			return;
+		}
+
+		// Get the file path
+		let filePath = editor.document.uri.fsPath;
+
+		// Get configuration
+		const config = vscode.workspace.getConfiguration('pathCopier');
+		const excludePrefix = config.get<string>('excludePrefix', '');
+		const commandPrefix = config.get<string>('commandPrefix', '');
+
+		// Remove the exclude prefix if it exists
+		if (excludePrefix && filePath.startsWith(excludePrefix)) {
+			filePath = filePath.substring(excludePrefix.length);
+			if (filePath.startsWith('/')) {
+				filePath = filePath.substring(1);
+			}
+		}
+
+		// Construct the full command
+		const fullCommand = `${commandPrefix}${filePath}`;
+
+		// Get the active terminal or create one
+		let terminal = vscode.window.activeTerminal;
+		if (!terminal) {
+			terminal = vscode.window.createTerminal();
+		}
+
+		terminal.show();
+		terminal.sendText(fullCommand, false); // false means don't execute the command
+	});
+
 	context.subscriptions.push(disposable);
 	context.subscriptions.push(copyPathCommand);
+	context.subscriptions.push(copyPathWithPrefixCommand);
 }
 
 // This method is called when your extension is deactivated
