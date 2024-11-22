@@ -1,6 +1,10 @@
 {
   "publisher": "biancapower",
   "name": "path-copier",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/biancapower/path-copier-vs-code-extension"
+  },
   "displayName": "Path Copier",
   "description": "Copy file paths to terminal with optional prefixes and restrictions",
   "version": "0.0.1",
