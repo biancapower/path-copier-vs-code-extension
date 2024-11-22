@@ -2,6 +2,18 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 
+function isPathAllowed(filePath: string, restrictToPath: string): boolean {
+	if (!restrictToPath) {
+		return true; // If no restriction is set, allow all paths
+	}
+
+	// Normalize paths to use forward slashes and remove trailing slashes
+	const normalizedPath = filePath.replace(/\\/g, '/').replace(/\/+$/, '');
+	const normalizedRestriction = restrictToPath.replace(/\\/g, '/').replace(/\/+$/, '');
+
+	return normalizedPath.includes(normalizedRestriction);
+}
+
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -27,12 +39,15 @@ export function activate(context: vscode.ExtensionContext) {
 			return;
 		}
 
-		// Get the file path
+		const config = vscode.workspace.getConfiguration('pathCopier');
+		const restrictToPath = config.get<string>('restrictToPath', '');
+		const excludePrefix = config.get<string>('excludePrefix', '');
 		let filePath = editor.document.uri.fsPath;
 
-		// Get the exclude prefix from configuration
-		const config = vscode.workspace.getConfiguration('pathCopier');
-		const excludePrefix = config.get<string>('excludePrefix', '');
+		if (!isPathAllowed(filePath, restrictToPath)) {
+			vscode.window.showErrorMessage(`This command can only be used on files within: ${restrictToPath}`);
+			return;
+		}
 
 		// Remove the prefix if it exists at the start of the path
 		if (excludePrefix && filePath.startsWith(excludePrefix)) {
@@ -61,11 +76,16 @@ export function activate(context: vscode.ExtensionContext) {
 			return;
 		}
 
-		// Get the file path
+		const config = vscode.workspace.getConfiguration('pathCopier');
+		const restrictToPath = config.get<string>('restrictToPath', '');
 		let filePath = editor.document.uri.fsPath;
 
-		// Get configuration
-		const config = vscode.workspace.getConfiguration('pathCopier');
+		if (!isPathAllowed(filePath, restrictToPath)) {
+			vscode.window.showErrorMessage(`This command can only be used on files within: ${restrictToPath}`);
+			return;
+		}
+
+		// Remove the exclude prefix if it exists
 		const excludePrefix = config.get<string>('excludePrefix', '');
 		const commandPrefix = config.get<string>('commandPrefix', '');
 

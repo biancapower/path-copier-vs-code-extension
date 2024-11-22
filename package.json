@@ -38,6 +38,11 @@
           "type": "string",
           "default": "",
           "description": "Command to prefix before the filepath (e.g., 'rails test:rspec spec=')"
+        },
+        "pathCopier.restrictToPath": {
+          "type": "string",
+          "default": "",
+          "description": "Only allow commands to run on files within this path (e.g., '/test/spec/')"
         }
       }
     }
