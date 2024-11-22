@@ -56,12 +56,6 @@ export function activate(context: vscode.ExtensionContext) {
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('demo.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello VS Code!');
-	});
-
 	let copyPathCommand = vscode.commands.registerCommand('demo.copyPathToTerminal', () => {
 		const filePath = getProcessedFilePath(vscode.window.activeTextEditor);
 		if (!filePath) return;
@@ -83,7 +77,6 @@ export function activate(context: vscode.ExtensionContext) {
 		terminal.sendText(fullCommand, false);
 	});
 
-	context.subscriptions.push(disposable);
 	context.subscriptions.push(copyPathCommand);
 	context.subscriptions.push(copyPathWithPrefixCommand);
 }
